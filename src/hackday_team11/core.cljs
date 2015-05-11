@@ -64,13 +64,24 @@
   [:div {:class="row form-group"}
    element])
 
+(defn render-element-with-param [id element param]
+  (reagent/render-component [element param]
+                            (.getElementById js/document id)))
+
+
+(defn greeting [nick]
+  [:div
+    [:h3 (str "Hello " nick "!")]])
+
 (defn login [username password]
   (go
     (let [response (json-parse
-                     (:body (<! (http/get (str "/login?username=" username "&password=" password)))))]
-      (println "Hello" (get response "nick") "!"))))
+                     (:body (<! (http/get (str "/login?username=" username "&password=" password)))))
+          nick (get response "nick")]
+      (println "Hello" nick)
+      (render-element-with-param "greeting" greeting nick))))
 
-(defn hello-world []
+(defn home []
   (let [email-address (atom nil)
         password (atom nil)]
     (fn []
@@ -88,7 +99,7 @@
 (defn json-parse [s]
   (js->clj (JSON/parse s)))
 
-(reagent/render-component [hello-world]
+(reagent/render-component [home]
                           (. js/document (getElementById "app")))
 
 
