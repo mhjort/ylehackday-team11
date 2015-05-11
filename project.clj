@@ -7,6 +7,9 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-3211"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
+                 [cljs-http "0.1.30"]
+                 [compojure "1.3.4"]
+                 [http-kit "2.1.19"]
                  [reagent "0.5.0-alpha3"]]
 
   :plugins [[lein-cljsbuild "1.0.5"]
@@ -15,7 +18,7 @@
   :source-paths ["src"]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
-  
+
   :cljsbuild {
     :builds [{:id "dev"
               :source-paths ["src"]
@@ -30,7 +33,7 @@
              {:id "min"
               :source-paths ["src"]
               :compiler {:output-to "resources/public/js/compiled/hackday_team11.js"
-                         :main hackday-team11.core                         
+                         :main hackday-team11.core
                          :optimizations :advanced
                          :pretty-print false}}]}
 
@@ -46,7 +49,7 @@
              ;; if you want to embed a ring handler into the figwheel http-kit
              ;; server, this is for simple ring servers, if this
              ;; doesn't work for you just run your own server :)
-             ;; :ring-handler hello_world.server/handler
+             :ring-handler hackday-team11.login-handler/app
 
              ;; To be able to open files in your editor from the heads up display
              ;; you will need to put a script on your path.
