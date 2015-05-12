@@ -22,23 +22,24 @@
    [:div {:class "prompt message-animation"} [:p message]]])
 
 (defn input-element
-  [id name type value]
+  [id name type value size]
   [:input {:id id
            :name name
            :class "form-control"
            :type type
            :required ""
            :value @value
+           :size size
            :on-change #(reset! value (-> % .-target .-value))}])
 
 (defn input-and-prompt
-  [label-value input-name input-type input-element-arg prompt-element required?]
+  [label-value input-name input-type input-element-arg prompt-element required? size]
   (let [input-focus (atom false)]
     (fn []
       [:div
        [:label label-value]
        (if @input-focus prompt-element [:div])
-       [input-element input-name input-name input-type input-element-arg input-focus]
+       [input-element input-name input-name input-type input-element-arg size]
        (if (and required? (= "" @input-element-arg))
          [:div "Field is required!"]
          [:div])])))
@@ -50,7 +51,8 @@
                    "email"
                    email-address-atom
                    [prompt-message "What's your email?"]
-                   true))
+                   true
+                   30))
 
 (defn password-form [password-atom]
   (input-and-prompt "salasana"
@@ -58,7 +60,8 @@
                     "password"
                     password-atom
                     [prompt-message "What's your password?"]
-                    true))
+                    true
+                    30))
 
 (defn url-form [url-atom]
  (input-and-prompt "url"
@@ -66,15 +69,17 @@
                    "text"
                    url-atom
                    [prompt-message "Url?"]
-                   true))
+                   true
+                   100))
 
 (defn text-form [text-atom]
   (input-and-prompt "teksti"
                     "text"
-                    "textarea"
+                    "text"
                     text-atom
                     [prompt-message "Text?"]
-                    true))
+                    true
+                    140))
 
 (defn wrap-as-element-in-form
   [element]
