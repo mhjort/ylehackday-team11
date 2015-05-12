@@ -86,7 +86,7 @@
         password (atom nil)]
     (fn []
       [:div {:class "signup-wrapper"}
-       [:h2 "Welcome to Team11 Login"]
+       [:h2 "Welcome to Yle Hack Day Team11 application"]
        [:form
         (wrap-as-element-in-form [email-form email-address])
         (wrap-as-element-in-form [password-form password])
@@ -94,7 +94,7 @@
                   :class "btn btn-default"
                   :on-click #(do (login @email-address @password)
                             false)}
-         "Submit"]]])))
+         "Login with YleTunnus"]]])))
 
 (defn json-parse [s]
   (js->clj (JSON/parse s)))
