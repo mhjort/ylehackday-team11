@@ -111,7 +111,7 @@
         password (atom nil)]
     (fn []
       [:div {:class "signup-wrapper"}
-       [:h2 "Kansanmuisti"]
+       [:img {:src "images/konsertti_valmis.jpg" :width "50%" :height "50%"}]
        (when-not (:logged-in? @app-state)
          [:form
           (wrap-as-element-in-form [email-form email-address])
