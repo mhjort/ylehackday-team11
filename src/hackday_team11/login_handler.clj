@@ -66,7 +66,9 @@
                       :exact-match)]
          (println exact-match)
          (get-top-articles exact-match)))
-  (GET "/login" [username password :as request]
-       (let [params (keywordize-keys (form-decode (:query-string request)))]
+  (POST "/login" {body :body}
+      (let [params (->> (URLDecoder/decode (slurp body) "UTF-8")
+                      (form-decode)
+                      (keywordize-keys))]
          (:body @(http/post (str "https://login.api.yle.fi/v1/user/login?app_id=" login-api-app-id "&app_key=" login-api-app-key)
                             {:form-params {"username" (:username params) "password" (:password params)}})))))

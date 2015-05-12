@@ -155,7 +155,8 @@
 (defn login [username password]
   (go
     (let [response (json-parse
-                     (:body (<! (http/get (str "/login?username=" username "&password=" password)))))
+                     (:body (<! (http/post "/login"
+                                           {:form-params {:username username :password password}}))))
           nick (get response "nick")]
       (println "Hello" nick)
       (render-element-with-param "greeting" greeting nick)
