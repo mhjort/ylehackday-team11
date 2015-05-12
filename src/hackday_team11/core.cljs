@@ -10,7 +10,7 @@
 
 ;; define your app data so that it doesn't get over-written on reload
 
-(defonce app-state (atom {:text "Hello world!"}))
+(defonce app-state (atom {:logged-in? false}))
 
 (defn json-parse [s]
   (js->clj (JSON/parse s)))
@@ -52,7 +52,7 @@
                    true))
 
 (defn password-form [password-atom]
-  (input-and-prompt "password"
+  (input-and-prompt "salasana"
                     "password"
                     "password"
                     password-atom
@@ -93,22 +93,24 @@
           nick (get response "nick")]
       (println "Hello" nick)
       (get-top-articles)
-      (render-element-with-param "greeting" greeting nick))))
+      (render-element-with-param "greeting" greeting nick)
+      (swap! app-state assoc :logged-in? true))))
 
 (defn home []
   (let [email-address (atom nil)
         password (atom nil)]
     (fn []
       [:div {:class "signup-wrapper"}
-       [:h2 "Welcome to Yle Hack Day Team11 application"]
-       [:form
-        (wrap-as-element-in-form [email-form email-address])
-        (wrap-as-element-in-form [password-form password])
-        [:button {:type "submit"
-                  :class "btn btn-default"
-                  :on-click #(do (login @email-address @password)
-                            false)}
-         "Login with YleTunnus"]]])))
+       [:h2 "Kansanmuisti"]
+       (when-not (:logged-in? @app-state)
+         [:form
+          (wrap-as-element-in-form [email-form email-address])
+          (wrap-as-element-in-form [password-form password])
+          [:button {:type "submit"
+                    :class "btn btn-default"
+                    :on-click #(do (login @email-address @password)
+                                   false)}
+           "Kirjaudu YleTunnuksella"]])])))
 
 (reagent/render-component [home]
                           (. js/document (getElementById "app")))
