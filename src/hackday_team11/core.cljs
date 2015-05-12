@@ -11,7 +11,7 @@
 
 ;; define your app data so that it doesn't get over-written on reload
 
-(defonce app-state (atom {:logged-in? false}))
+(defonce app-state (atom {:logged-in? false :inserted? false}))
 
 (defn json-parse [s]
   (js->clj (JSON/parse s)))
@@ -60,6 +60,22 @@
                     [prompt-message "What's your password?"]
                     true))
 
+(defn url-form [url-atom]
+ (input-and-prompt "url"
+                   "url"
+                   "text"
+                   url-atom
+                   [prompt-message "Url?"]
+                   true))
+
+(defn text-form [text-atom]
+  (input-and-prompt "teksti"
+                    "text"
+                    "textarea"
+                    text-atom
+                    [prompt-message "Text?"]
+                    true))
+
 (defn wrap-as-element-in-form
   [element]
   [:div {:class="row form-group"}
@@ -88,13 +104,48 @@
   [:div
     [:h3 (str "Tervetuloa " nick "!")]])
 
-(defn get-top-articles []
+(defn get-top-articles [exact-match]
   (go
     (let [response (json-parse
-                     (:body (<! (http/get "/top_articles"))))
+                     (:body (<! (http/post "/top_articles?exact-match"
+                                           {:form-params {:exact-match exact-match}}))))
           data (get response "data")]
       (render-element-with-param "articles" articles data)
       (render-element-with-param "images" images data))))
+
+(defn proposals [concept]
+  [:div
+   [:span (str "Instauksesi oli ilmeisesti aiheesta " (:title concept) " (" (:disambiguationHint concept) ")")]])
+
+(defn propose-tags [text]
+  (go
+    (let [response (json-parse
+                     (:body (<! (http/post "/proposed_tags"
+                                          {:form-params {:text text}}))))
+          data (keywordize-keys response)]
+      (println data)
+      (render-element-with-param "proposals" proposals (first (:data data)))
+      (swap! app-state assoc :inserted? true)
+      (println (-> data :data first :exactMatch first))
+      (get-top-articles (-> data :data first :exactMatch first)))))
+
+(defn new-content-form [nick]
+  (let [text (atom nil)
+        url (atom nil)]
+    (fn []
+      (when-not (:inserted? @app-state)
+        [:div {:class "signup-wrapper"}
+         [:h2 "Linkkaa instasta"]
+         (when-not (:inserted? @app-state)
+           [:form
+            (wrap-as-element-in-form [text-form text])
+            (wrap-as-element-in-form [url-form url])
+            [:button {:type "submit"
+                      :class "btn btn-default"
+                      :on-click #(do (println @text @url)
+                                     (propose-tags @text)
+                                     false)}
+             "Linkkaa!"]])]))))
 
 (defn login [username password]
   (go
@@ -102,9 +153,10 @@
                      (:body (<! (http/get (str "/login?username=" username "&password=" password)))))
           nick (get response "nick")]
       (println "Hello" nick)
-      (get-top-articles)
       (render-element-with-param "greeting" greeting nick)
+      (render-element-with-param "new-content" new-content-form nick)
       (swap! app-state assoc :logged-in? true))))
+
 
 (defn home []
   (let [email-address (atom nil)
