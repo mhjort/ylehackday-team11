@@ -1,6 +1,7 @@
 (ns ^:figwheel-always hackday-team11.core
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [cljs-http.client :as http]
+            [clojure.walk :refer [keywordize-keys]]
             [cljs.core.async :refer [<!]]
             [reagent.core :as reagent :refer [atom]]))
 
@@ -68,6 +69,14 @@
   (reagent/render-component [element param]
                             (.getElementById js/document id)))
 
+(defn images [data]
+  (let [images (remove nil? (keywordize-keys (map #(get % "image") data)))]
+    [:div
+      [:h3 "Suosituimmat kuvat tällä hetkellä"]
+      [:ul
+        (map (fn [item] 
+                ^{:key item} [:li [:img {:src (:uri item)}]]) images)]]))
+
 (defn articles [data]
   [:div
     [:h3 "Suosituimmat artikkelit tällä hetkellä"]
@@ -84,7 +93,8 @@
     (let [response (json-parse
                      (:body (<! (http/get "/top_articles"))))
           data (get response "data")]
-      (render-element-with-param "articles" articles data))))
+      (render-element-with-param "articles" articles data)
+      (render-element-with-param "images" images data))))
 
 (defn login [username password]
   (go

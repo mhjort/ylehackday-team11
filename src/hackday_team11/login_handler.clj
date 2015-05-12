@@ -22,7 +22,7 @@
           article-ids (clojure.string/join "," (take 10 (map :yleId (:data some-data))))]
           (:body @(http/get (str "http://articles.api.yle.fi/v1/items.json?id="
                                  article-ids
-                                 "&fields=title,lead,url&"
+                                 "&fields=title,lead,url,image&"
                                  (articles-auth-params))))))
 
 (defroutes app
