@@ -1,0 +1,258 @@
+@page-width: 800px;
+@logo-width: 100px;
+
+* {
+    padding:0;
+    margin:0;
+    text-decoration:none;
+    color:#191919;
+    font-family:'Open Sans', Arial, sans-serif;
+    font-size:14px;
+}
+
+p  { line-height:25px; margin-bottom:10px; }
+
+a  {
+  color:#00AABD;
+
+  &:hover {
+    color:#777780;
+  }
+}
+
+h2 { font-size:24px; margin-bottom:20px; }
+h3 { font-size:18px; }
+
+h2, h3 {
+  font-weight:normal;
+  border-bottom:1px solid #ddd;
+  padding-bottom:6px; 
+}
+
+h3,h4 {
+    margin:20px 0; 
+}
+
+code {
+    font-family:'Inconsolata', monospaced, sans-serif;
+    background: #eef1f2;
+    color: #546974;
+    padding: 0 1px;
+    font-size:16px;
+    letter-spacing:1px;
+}
+
+p {
+    code {
+        white-space:nowrap;
+    }
+}
+
+pre {
+  margin-bottom:10px;
+
+  code {
+    white-space:pe-line;
+    display:block;
+    border-top:1px solid #ddd;
+    border-bottom:1px solid #ddd;
+    padding:10px;
+    overflow:auto;
+  }
+}
+
+ul, ol {
+  margin-left:19px;
+  li {
+    margin-bottom:10px;
+  }
+}
+
+header {
+  height:100px;
+  background-color:#00aabd;
+  color:white;
+
+  h1 {
+    width:@page-width;
+    margin:0 auto;
+  }
+
+  span {
+    vertical-align:top;
+  }
+  
+  span.yle {
+    display:inline-block;
+    width:@logo-width;
+    height:@logo-width;
+    background:transparent url('/static/yle-logo.png') no-repeat top left;
+    background-size:@logo-width @logo-width;
+    font-size:0px;
+  }
+
+  span.api {
+    font-size:25px;
+    color:white;
+    display:inline-block;
+    margin-top:@logo-width/2-15px;
+    letter-spacing:5px;
+  }
+}
+
+nav#main-menu {
+  width:@page-width;
+  margin:0 auto;
+
+  position:relative;
+  top:-63px;
+  
+  ul {
+    margin-left:@logo-width*2;
+
+    li {
+      list-style-type:none;
+      display:inline-block; 
+
+      a {
+        display:inline-block;
+        color:white;
+        padding:8px;
+        background-color:#002226;
+
+        &:hover {
+          background-color:black;
+        }
+      }
+    }
+  }
+}
+
+nav#sidebar {
+  width:200px;
+  position:relative;
+}
+
+section#frontpage, section#thanks, section#contact {
+  width:800px;
+  margin:0 auto;
+}
+
+section#tutorials-main {
+  width:800px;
+  margin:0 auto;
+
+  ul {
+    margin:0;
+    padding:0;
+
+    li {
+      list-style-type:none;
+      font-weight:bold;
+      font-size:18px;
+
+      span.lead {
+        margin-top:5px;
+        display:block;
+      }
+    }
+  }
+}
+
+section#tutorials {
+  width:800px;
+  margin:0 auto;
+
+  div#breadcrumbs {
+    margin-top:-20px;
+    margin-bottom:20px;
+    font-size:13px;
+
+    a { font-size:13px; }
+  }
+}
+
+#decryption-tool {
+  border-top:1px solid #ddd;
+  border-bottom:1px solid #ddd;
+  background-color:#eee;
+  margin-bottom:10px;
+
+  p.input {
+    padding:10px;
+    margin-bottom:0;
+
+    input {
+      padding:3px;
+    }
+
+    input[name=encrypted-url] {
+      width:300px;
+      margin-right:5px;
+    }
+
+    input[name=secret] {
+      width:200px;
+      margin-right:7px;
+    }
+
+    button {
+      padding:4px;
+      background-color:#ddd;
+      border:1px solid #999;
+    }
+  }
+
+  p.result {
+    display:none;
+    border-top:1px solid #aaa;
+    padding:10px;
+    margin-bottom:0;
+
+    input[name=decrypted-url] {
+      margin-top:10px;
+      background-color:#eee;
+      border:1px solid #ddd;
+      padding:5px;
+      font-family:'Monaco', monospaced, sans-serif;
+      width:(@page-width)-30;
+    }
+  }
+}
+
+form#order-api-keys, form#support-request {
+  label {
+    font-size:13px;
+  }
+
+  span.help {
+    font-size:12px;
+    font-style:italic;
+  }
+
+  input[type=text], textarea {
+    width:300px;
+  }
+
+  input[type=checkbox] {
+    margin-right:5px;
+  }
+
+  textarea {
+    height:150px;
+  }
+
+  button {
+    margin-top:10px;
+    display:inline-block;
+    padding:8px;
+    background-color:#eee;
+    border:1px solid #ddd;
+  }
+}
+
+form#support-request {
+  input[type=text], textarea {
+    width:500px;
+  }
+}

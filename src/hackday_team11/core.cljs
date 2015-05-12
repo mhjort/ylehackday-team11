@@ -12,14 +12,15 @@
 
 (defonce app-state (atom {:text "Hello world!"}))
 
+(defn json-parse [s]
+  (js->clj (JSON/parse s)))
+
 (defn prompt-message
-  "A prompt that will animate to help the user with a given input"
   [message]
   [:div {:class "my-messages"}
    [:div {:class "prompt message-animation"} [:p message]]])
 
 (defn input-element
-  "An input element which updates its value on change"
   [id name type value]
   [:input {:id id
            :name name
@@ -30,7 +31,6 @@
            :on-change #(reset! value (-> % .-target .-value))}])
 
 (defn input-and-prompt
-  "Creates an input box and a prompt box that appears above the input when the input comes into focus. Also throws in a little required message"
   [label-value input-name input-type input-element-arg prompt-element required?]
   (let [input-focus (atom false)]
     (fn []
@@ -68,10 +68,23 @@
   (reagent/render-component [element param]
                             (.getElementById js/document id)))
 
+(defn articles [data]
+  [:div
+    [:h3 "Suosituimmat artikkelit tällä hetkellä"]
+    [:ul
+      (map (fn [item] 
+            ^{:key item} [:li [:a {:href (get item "url")} (get item "lead")]]) data)]])
 
 (defn greeting [nick]
   [:div
-    [:h3 (str "Hello " nick "!")]])
+    [:h3 (str "Tervetuloa " nick "!")]])
+
+(defn get-top-articles []
+  (go
+    (let [response (json-parse
+                     (:body (<! (http/get "/top_articles"))))
+          data (get response "data")]
+      (render-element-with-param "articles" articles data))))
 
 (defn login [username password]
   (go
@@ -79,6 +92,7 @@
                      (:body (<! (http/get (str "/login?username=" username "&password=" password)))))
           nick (get response "nick")]
       (println "Hello" nick)
+      (get-top-articles)
       (render-element-with-param "greeting" greeting nick))))
 
 (defn home []
@@ -95,9 +109,6 @@
                   :on-click #(do (login @email-address @password)
                             false)}
          "Login with YleTunnus"]]])))
-
-(defn json-parse [s]
-  (js->clj (JSON/parse s)))
 
 (reagent/render-component [home]
                           (. js/document (getElementById "app")))
